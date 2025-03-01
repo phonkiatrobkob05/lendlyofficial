@@ -83,7 +83,7 @@
       <div class="swiper mySwiper">
         <div class="swiper-wrapper">
           <div class="swiper-slide">
-            <img src="http://localhost:8080/api/uploads/file-1740843836602-66339848.jpg" alt="" class="w-25"/>
+            <img src="https://lendly-backend.onrender.com/api/uploads/file-1740843836602-66339848.jpg" alt="" class="w-25"/>
             <p >eeee</p>
           </div>
           
@@ -128,7 +128,7 @@
         var data = null
 
         async function fetchData() {
-          const res = await fetch("http://localhost:8081/api/product");
+          const res = await fetch("https://lendly-backend.onrender.com/api/product");
           data = await res.json();
           console.log(data);
             
@@ -138,7 +138,7 @@
       slide.classList.add('swiper-slide');
 
       var image = document.createElement('img');
-      image.src = `http://localhost:8080/api/uploads/${product.file}`; // Assuming the image URL is in the `image` field
+      image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`; // Assuming the image URL is in the `image` field
       image.alt = product.title; // Assuming the product name is available
 
       var title = document.createElement('p');

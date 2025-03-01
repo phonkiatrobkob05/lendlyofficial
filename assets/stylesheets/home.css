@@ -42,3 +42,5 @@ html,
         .swiper-pagination {
             bottom: 10px;
         }
+        /* Ensures that images inside cards have a 1:1 ratio */
+/* Ensure the image is displayed with 1:1 ratio */

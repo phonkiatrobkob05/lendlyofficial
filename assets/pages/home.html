@@ -1,93 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="../stylesheets/home.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lendly</title>
     <style></style>
-  </head>
+</head>
 
-  <body>
-    <div
-      class="Header d-flex justify-content-center align-items-center p-4 gap-4"
-    >
-      <div class="Header__logo">
-        <img src="../images/lendlylogo.svg" alt="Lendly Logo" class="w-12" />
-      </div>
-      <div class="Header__search">
-        <form>
-          <input
-            type="text"
-            placeholder="Search..."
-            class="form-control border border-secondary rounded-3 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </form>
-      </div>
-      <div class="Header__notification">
-        <a class="p-2">
-          <img src="../images/bellicon.svg" alt="Notification" />
-        </a>
-      </div>
+<body>
+    <div class="Header d-flex justify-content-center align-items-center p-4 gap-4">
+        <div class="Header__logo">
+            <img src="../images/lendlylogo.svg" alt="Lendly Logo" class="w-12" />
+        </div>
+        <div class="Header__search">
+            <form>
+                <input type="text" placeholder="Search..."
+                    class="form-control border border-secondary rounded-3 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </form>
+        </div>
+        <div class="Header__notification">
+            <a class="p-2">
+                <img src="../images/bellicon.svg" alt="Notification" />
+            </a>
+        </div>
     </div>
-    <div
-      class="subheader d-flex justify-content-center align-items-center gap-1"
-    >
-      <div class="subheader__logo">
-        <img src="../images/lendlylogo.svg" alt="Lendly Logo" class="w-6" />
-      </div>
-      <div class="subheader__text">
-        <h1 class="h2 fw-bold">lendly</h1>
-        <p class="h5 text-muted">
-          Lend it. Borrow it. <br />
-          Love it.
-        </p>
-      </div>
-      <div class="subheader__image">
-        <img
-          src="../images/lendborrowlogo.svg"
-          alt="Lend and Borrow"
-          class="w-30"
-        />
-      </div>
+    <div class="subheader d-flex justify-content-center align-items-center gap-1">
+        <div class="subheader__logo">
+            <img src="../images/lendlylogo.svg" alt="Lendly Logo" class="w-6" />
+        </div>
+        <div class="subheader__text">
+            <h1 class="h2 fw-bold">lendly</h1>
+            <p class="h5 text-muted">
+                Lend it. Borrow it. <br />
+                Love it.
+            </p>
+        </div>
+        <div class="subheader__image">
+            <img src="../images/lendborrowlogo.svg" alt="Lend and Borrow" class="w-30" />
+        </div>
     </div>
     <div class="container">
         <!-- Section for displaying products -->
         <h2>Product List</h2>
         <div id="product-list" class="row">
-          <!-- Data from the API will be injected here -->
+            <!-- Data from the API will be injected here -->
         </div>
-    <div class="container">
-      <div class="swiper mySwiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <img src="https://lendly-backend.onrender.com/api/uploads/file-1740843836602-66339848.jpg" alt="" class="w-25"/>
-            <p >eeee</p>
-          </div>
-          
-          <!-- <div class="swiper-slide">
+        <div class="container">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://lendly-backend.onrender.com/api/uploads/file-1740843836602-66339848.jpg"
+                            alt="" class="w-25" />
+                        <p>eeee</p>
+                    </div>
+
+                    <!-- <div class="swiper-slide">
             <img src="../images/unclelee.jpg" alt="" />
           </div>
           <div class="swiper-slide">
@@ -109,86 +90,145 @@
             <img src="../images/unclelee.jpg" alt="" />
           </div>
         </div> -->
-        <div class="swiper-pagination"></div>
-      </div>
+                    <div class="swiper-pagination"></div>
+                </div>
 
-      <!-- Swiper JS -->
-      <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+                <!-- Swiper JS -->
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-      <!-- Initialize Swiper -->
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          try {
-            fetchData();
-          } catch (error) {
-            console.log(error);
-          }
-        });
+                <!-- Initialize Swiper -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        try {
+                            fetchData();
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    });
 
-        var data = null
+                    var data = null
 
-        async function fetchData() {
-          const res = await fetch("https://lendly-backend.onrender.com/api/product");
-          data = await res.json();
-          console.log(data);
-            
-          const swiperWrapper = document.querySelector('.swiper-wrapper');
-          data.forEach(product => {
-      var slide = document.createElement('div');
-      slide.classList.add('swiper-slide');
+                    async function fetchData() {
+    const res = await fetch("https://lendly-backend.onrender.com/api/product");
+    const data = await res.json();
+    console.log(data);
 
-      var image = document.createElement('img');
-      image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`; // Assuming the image URL is in the `image` field
-      image.alt = product.title; // Assuming the product name is available
-
-      var title = document.createElement('p');
-      title.textContent = product.title; // Assuming the product name is available
-
-      slide.appendChild(image);
-      slide.appendChild(title);
-
-      swiperWrapper.appendChild(slide);
-    });
-          
-        }
-
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    data.forEach(product => {
+        // Create a swiper-slide div
+        var slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
         
+        // Create a card div inside the slide
+        var card = document.createElement('div');
+        card.classList.add('card', 'h-100');  // Add Bootstrap 'card' class
 
-        var swiper = new Swiper(".mySwiper", {
-          slidesPerView: 3,
-          spaceBetween: 30,
-          loop: true, // Enable looping
-          autoplay: {
-            delay: 2500, // Slide transition delay
-            disableOnInteraction: false, // Continue autoplay after interaction
-          },
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          breakpoints: {
-            // Adjust slides per view for smaller screens
-            640: {
-              slidesPerView: 1, // On small screens, show 1 slide
-            },
-            768: {
-              slidesPerView: 2, // On medium screens, show 2 slides
-            },
-            1024: {
-              slidesPerView: 3, // On large screens, show 3 slides
-            },
-          },
-        });
-      </script>
-    </div>
+        // Create the image element
+        var image = document.createElement('img');
+        image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`;
+        image.alt = product.title;
+        image.classList.add('card-img-top');  // Use Bootstrap's 'card-img-top' class
 
-    <nav class="navbar fixed-bottom navbar-light bg-white shadow-sm" style="height: 50px;">
-      <div class="container d-flex justify-content-around">
-          <a href="home.html" class="nav-link text-dark">🏠 Home</a>
-          <a href="feed.html" class="nav-link text-dark">📰 Feed</a>
-          <a href="library.html" class="nav-link text-dark">📚 Library</a>
-          <a href="profile.html" class="nav-link text-primary fw-bold">👤 Profile</a>
-      </div>
-  </nav>
-  </body>
+        // Create the card body
+        var cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        // Create the title element
+        var title = document.createElement('h5');
+        title.classList.add('card-title');
+        title.textContent = product.title;
+
+        // Create the description element (if available)
+        var description = document.createElement('p');
+        description.classList.add('card-text');
+        description.textContent = product.description || "No description available";  // Fallback if no description
+
+        // Create a price element (if available)
+        var price = document.createElement('p');
+        price.classList.add('card-text');
+        price.textContent = `Price: $${product.price || 'N/A'}`;  // Fallback if no price
+
+        // Append all elements together
+        cardBody.appendChild(title);
+        cardBody.appendChild(description);
+        cardBody.appendChild(price);
+        card.appendChild(image);
+        card.appendChild(cardBody);
+        slide.appendChild(card);
+
+        // Add the slide to the swiper wrapper
+        swiperWrapper.appendChild(slide);
+    });
+}
+
+
+
+
+                    var swiper = new Swiper(".mySwiper", {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                        loop: true, // Enable looping
+                        autoplay: {
+                            delay: 2500, // Slide transition delay
+                            disableOnInteraction: false, // Continue autoplay after interaction
+                        },
+                        simulateTouch: true, // Enable swiping with mouse or touch
+                        touchStartPreventDefault: true, // Allow swiping even if you start on a clickable element
+                        breakpoints: {
+                            // Adjust slides per view for smaller screens
+                            640: {
+                                slidesPerView: 1, // On small screens, show 1 slide
+                            },
+                            768: {
+                                slidesPerView: 2, // On medium screens, show 2 slides
+                            },
+                            1024: {
+                                slidesPerView: 3, // On large screens, show 3 slides
+                            },
+                        },
+                    });
+
+                    document.addEventListener('DOMContentLoaded', function () {
+
+                        // Fetch and load the navbar from components/navbar.html
+                        function loadNavbar() {
+                            fetch('/components/navbar.html')
+                                .then(response => response.text())
+                                .then(html => {
+                                    document.getElementById('navbar-container').innerHTML = html;
+                                })
+                                .catch(error => {
+                                    console.error('Error loading the navbar:', error);
+                                });
+                        }
+
+                        loadNavbar(); // Load the navbar into the placeholder
+
+                        // Get all the navigation links
+                        const navItems = document.querySelectorAll('nav .nav-link');
+
+                        // Function to highlight the active navigation link
+                        function highlightActiveNavLink() {
+                            const currentPath = window.location.pathname; // Get the current URL path
+                            navItems.forEach(item => {
+                                // Check if the href attribute matches the current page
+                                if (currentPath.includes(item.getAttribute('href'))) {
+                                    item.classList.add('active'); // Add 'active' class to highlight
+                                } else {
+                                    item.classList.remove('active'); // Remove 'active' class if not the current page
+                                }
+                            });
+                        }
+
+                        // Call the function to highlight the active navbar item
+                        highlightActiveNavLink();
+
+                    });
+                </script>
+            </div>
+
+            <div id="navbar-container"></div>
+
+</body>
+
 </html>

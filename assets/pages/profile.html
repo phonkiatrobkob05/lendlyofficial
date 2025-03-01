@@ -1,50 +1,77 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Fix for the body to make sure the navbar stays at the bottom */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #navbar-container {
+            margin-top: auto; /* Ensures the navbar is pushed to the bottom */
+        }
+
+        .profile-options {
+            max-height: 400px;
+            overflow-y: auto; /* Ensures that if content overflows, it scrolls */
+        }
+
+        .list-group-item {
+            height: 16.67%;
+        }
+    </style>
 </head>
+
 <body class="bg-light">
+    <!-- Profile Container -->
     <div class="container text-center">
         <div class="p-4">
-            <img src="/lendlyofficial/assets/images/nigga.png" alt="Profile Picture" class="rounded-circle border border-primary object-fit-cover" width="100" height="100">
+            <!-- Profile Picture -->
+            <img src="/lendlyofficial/assets/images/nigga.png" alt="Profile Picture"
+                class="rounded-circle border border-primary object-fit-cover" width="100" height="100">
             <h4 class="mt-3">Somchai Heehom</h4>
             <p class="text-muted">somchai.hee@gmail.com</p>
-            <div class="d-flex flex-column align-items-center" style="height: 500px;">
-                <a href="editprofile.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" style="height: 16.67%;">
+            <!-- Profile Options with Scroll if needed -->
+            <div class="d-flex flex-column align-items-center profile-options">
+                <a href="editprofile.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center">
                     <div class="d-flex justify-content-between w-100">
                         <span>📝 Edit Profile</span>
                         <span>➡️</span>
                     </div>
                 </a>
-                <a href="membership.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" style="height: 16.67%;">
+                <a href="membership.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center">
                     <div class="d-flex justify-content-between w-100">
                         <span>🧑 Membership</span>
                         <span>➡️</span>
                     </div>
                 </a>
-                <a href="notifications.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" style="height: 16.67%;">
+                <a href="notifications.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center">
                     <div class="d-flex justify-content-between w-100">
                         <span>🔔 Notification</span>
                         <span>➡️</span>
                     </div>
                 </a>
-                <a href="/assets/pages/helppages/helpcenter.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" style="height: 16.67%;">
+                <a href="/assets/pages/helppages/helpcenter.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center">
                     <div class="d-flex justify-content-between w-100">
                         <span>📚 Help</span>
                         <span>➡️</span>
                     </div>
                 </a>
-                <a href="report.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" style="height: 16.67%;">
+                <a href="report.html" class="list-group-item list-group-item-action border-bottom d-flex align-items-center">
                     <div class="d-flex justify-content-between w-100">
                         <span>❗ Report</span>
                         <span>➡️</span>
                     </div>
                 </a>
-                <a href="#" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" onclick="logout()" style="height: 16.67%;">
+                <a href="#" class="list-group-item list-group-item-action border-bottom d-flex align-items-center" onclick="logout()">
                     <div class="d-flex justify-content-between w-100">
                         <span>🚪 Logout</span>
                         <span>➡️</span>
@@ -53,21 +80,48 @@
             </div>
         </div>
     </div>
-    
-    <nav class="navbar fixed-bottom navbar-light bg-white shadow-sm" style="height: 50px;">
-        <div class="container d-flex justify-content-around">
-            <a href="home.html" class="nav-link text-dark">🏠 Home</a>
-            <a href="feed.html" class="nav-link text-dark">📰 Feed</a>
-            <a href="library.html" class="nav-link text-dark">📚 Library</a>
-            <a href="profile.html" class="nav-link text-primary fw-bold">👤 Profile</a>
-        </div>
-    </nav>
-    
+
+    <!-- Placeholder for Navbar -->
+    <div id="navbar-container"></div>
+
     <script>
+        // Logout function to alert and redirect
         function logout() {
             alert('Logging out...');
             window.location.href = 'login.html';
         }
+
+        // Load the navbar dynamically into the page
+        document.addEventListener('DOMContentLoaded', function () {
+            function loadNavbar() {
+                fetch('/components/navbar.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('navbar-container').innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error loading the navbar:', error);
+                    });
+            }
+
+            loadNavbar(); // Load the navbar into the placeholder
+
+            // Highlight active nav link
+            const navItems = document.querySelectorAll('nav .nav-link');
+            function highlightActiveNavLink() {
+                const currentPath = window.location.pathname;
+                navItems.forEach(item => {
+                    if (currentPath.includes(item.getAttribute('href'))) {
+                        item.classList.add('active'); // Add 'active' class to highlight
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            highlightActiveNavLink();
+        });
     </script>
 </body>
+
 </html>

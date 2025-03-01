@@ -30,61 +30,22 @@
         <div class="mt-3 mb-3 font-[Inter]">กรุณาลงทะเบียน</div>
         <h2 class="text-center mb-4 fs-2 fw-bold">Register</h2>
       
-        <form class="d-flex flex-column gap-3" onSubmit={handleSubmit}>
+        <form id="registerForm" class="d-flex flex-column gap-3">
       
           <div class="mb-3">
-            <label
-              htmlFor="studentID"
-              class="form-label text-muted"
-            >
-              Student ID
-            </label>
-            <input
-              type="text"
-              id="studentID"
-              placeholder="Student ID"
-              class="form-control"
-              onChange={handleChange}
-              required
-              name="studentID"
-            />
+            <label htmlFor="studentID" class="form-label text-muted">Student ID</label>
+            <input type="text" id="studentID" placeholder="Student ID" class="form-control" required name="studentID" />
           </div>
       
           <div class="mb-3">
-            <label
-              htmlFor="fullName"
-              class="form-label text-muted"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="fullName"
-              placeholder="Enter Full Name"
-              class="form-control"
-              onChange={handleChange}
-              required
-              name="fullName"
-            />
+            <label htmlFor="fullName" class="form-label text-muted">Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter Full Name" class="form-control" required name="fullName" />
           </div>
       
           <div class="mb-3">
-            <label
-              htmlFor="faculty"
-              class="form-label text-muted"
-            >
-              Faculty
-            </label>
-            <select
-              id="faculty"
-              class="form-select"
-              onChange={handleChange}
-              required
-              name="faculty"
-            >
-              <option value="" disabled>
-                Select your faculty
-              </option>
+            <label htmlFor="faculty" class="form-label text-muted">Faculty</label>
+            <select id="faculty" class="form-select" required name="faculty">
+              <option value="" disabled>Select your faculty</option>
               <option value="Architecture">Architecture, Art and Design</option>
               <option value="AgriTech">Agricultural and Technology</option>
               <option value="Business">Business</option>
@@ -102,109 +63,50 @@
           </div>
       
           <div class="mb-3">
-            <label
-              htmlFor="email"
-              class="form-label text-muted"
-            >
-              Email
-            </label>
-            <div class="position-relative">
-              <input
-                class="form-control ps-5"
-                type="email"
-                id="email"
-                placeholder="Input your e-mail"
-                required
-                name="email"
-                onChange={handleChange}
-              />
-              <img
-                class="position-absolute top-50 start-0 translate-middle-y ms-2"
-                src="../images/mailicon.svg"
-                alt=""
-              />
-            </div>
+            <label htmlFor="email" class="form-label text-muted">Email</label>
+            <input class="form-control" type="email" id="email" placeholder="Input your e-mail" required name="email" />
           </div>
       
           <div class="mb-3">
-            <label
-              htmlFor="password"
-              class="form-label text-muted"
-            >
-              Password
-            </label>
-            <div class="position-relative">
-              <input
-                class="form-control ps-5"
-                type={passwordVisible ? "text" : "password"}
-                id="password"
-                placeholder="Input your password"
-                required
-                name="password"
-                onChange={handleChange}
-              />
-              <img
-                class="position-absolute top-50 start-0 translate-middle-y ms-2"
-                src="../images/lockicon.svg"
-                alt="Lock Icon"
-                id="toggleVisibility"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                class="position-absolute top-50 end-0 translate-middle-y me-2 btn btn-link"
-              >
-              </button>
-            </div>
+            <label htmlFor="password" class="form-label text-muted">Password</label>
+            <input class="form-control" type="password" id="password" placeholder="Input your password" required name="password" />
           </div>
       
           <div class="mb-3">
-            <label for="password" class="form-label text-muted">Password:</label>
-              Confirm Password
-            </label>
-            <div class="position-relative">
-              <input
-                class="form-control ps-5"
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                required
-                name="confirmPassword"
-                onChange={handleChange}
-              />
-              <img
-                class="position-absolute top-50 start-0 translate-middle-y ms-2"
-                src="../images/lockicon.svg"
-                alt="Lock Icon"
-                id="toggleVisibility"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                class="position-absolute top-50 end-0 translate-middle-y me-2 btn btn-link"
-              >
-        
-              </button>
-            </div>
+            <label htmlFor="confirmPassword" class="form-label text-muted">Confirm Password</label>
+            <input class="form-control" type="password" id="confirmPassword" placeholder="Enter your password" required name="confirmPassword" />
           </div>
       
-          <button
-            type="submit"
-            class="btn btn-primary w-100 mt-3"
-          >
-            Submit
-          </button>
+          <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
         </form>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+          Registration successful! Redirecting to login page...
+        </div>
       
         <div class="mt-3 text-center">
           Already have an account?
-          <a href="login.html" class="text-primary">
-            Login here!
-          </a>
+          <a href="login.html" class="text-primary">Login here!</a>
         </div>
-      </div>
-      
-      
+    </div>
+
+    <script>
+      // Handle form submission
+      const form = document.getElementById('registerForm');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Show success message
+        const successMessage = document.getElementById('successMessage');
+        successMessage.style.display = 'block';
+
+        // Redirect to login page after 3 seconds
+        setTimeout(function () {
+          window.location.href = 'login.html';
+        }, 3000);
+      });
+    </script>
 </body>
 
 </html>

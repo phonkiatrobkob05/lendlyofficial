@@ -48,7 +48,7 @@
               placeholder="email"
               required
               name="email"
-              onchange="handleChange"
+              
             />
             <img
               src="../images/mailicon.svg"
@@ -69,41 +69,37 @@
               placeholder="Password"
               required
               name="password"
-              onchange="handleChange"
+
             />
             <img
               src="../images/lockicon.svg"
               alt="Lock Icon"
               class="position-absolute top-50 start-0 translate-middle-y ps-2"
             />
-            <button
+            <a
               type="button"
-              onclick="togglePasswordVisibility"
+              onclick="togglePasswordVisibility()"
               class="position-absolute top-50 end-0 translate-middle-y pe-2"
+              id="togglePassword"
             >
               <img src="../images/eye.svg" alt="Show Password" />
-            </button>
+            </a>
           </div>
-        </div>
-
-        <div
-          class="d-flex py-4 text-sm align-items-center justify-content-center"
-        >
-          <h1>Forgot your password?</h1>
-          <a href="#" class="text-primary ms-2"> Reset here </a>
         </div>
         <button
           type="submit"
-          class="btn btn-primary mt-4 w-100"
-          disabled="disabled"
+          class="btn btn-primary mt-4 w-100 cursor-pointer"
         >
           Login
         </button>
       </form>
-      <div class="d-flex mt-auto py-4 text-sm">
-        <h1>Don’t have an account?</h1>
-        <a href="/#/register" class="text-primary ms-2"> Register here </a>
+      <div class="d-flex mt-auto py-4">
+        <p class="text-center">Don't have an account? &nbsp;</p>
+        <a href="/#/register" class="text-center"> Register here </a>
       </div>
     </div>
+
+    <!-- Link to external JS file placed before the closing body tag -->
+    <script src="/assets/script/login.js"></script>
   </body>
 </html>

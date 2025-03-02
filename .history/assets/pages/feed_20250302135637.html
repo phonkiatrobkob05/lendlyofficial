@@ -14,12 +14,10 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            margin: 0;
         }
         .content-container {
             flex-grow: 1;
             padding: 20px;
-            padding-bottom: 60px; /* Ensure content is not hidden by the bottom navbar */
         }
         .post {
             border: 1px solid #ccc;
@@ -31,20 +29,9 @@
             padding-left: 15px;
             border-left: 2px solid #ccc;
         }
-
-        /* Bottom Navbar */
-        #navbar-container {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 1000; /* Ensure it's above the content */
-        }
     </style>
 </head>
 <body>
-    <!-- Navbar Placeholder -->
-    <div id="navbar-container"></div>
-
     <div class="content-container">
         <h2>📢 Lendly Feed</h2>
         
@@ -57,44 +44,6 @@
     </div>
 
     <script>
-        // Fetch and load the navbar
-        document.addEventListener('DOMContentLoaded', function () {
-
-            // Fetch and load the navbar from components/navbar.html
-            function loadNavbar() {
-                fetch('/components/navbar.html')
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('navbar-container').innerHTML = html;
-                    })
-                    .catch(error => {
-                        console.error('Error loading the navbar:', error);
-                    });
-            }
-
-            loadNavbar(); // Load the navbar into the placeholder
-
-            // Get all the navigation links
-            const navItems = document.querySelectorAll('nav .nav-link');
-
-            // Function to highlight the active navigation link
-            function highlightActiveNavLink() {
-                const currentPath = window.location.pathname; // Get the current URL path
-                navItems.forEach(item => {
-                    // Check if the href attribute matches the current page
-                    if (currentPath.includes(item.getAttribute('href'))) {
-                        item.classList.add('active'); // Add 'active' class to highlight
-                    } else {
-                        item.classList.remove('active'); // Remove 'active' class if not the current page
-                    }
-                });
-            }
-
-            // Call the function to highlight the active navbar item
-            highlightActiveNavLink();
-
-        });
-
         // Fetch Posts
         async function fetchPosts() {
             try {

@@ -94,7 +94,7 @@
         // Load the navbar dynamically into the page
         document.addEventListener('DOMContentLoaded', function () {
             function loadNavbar() {
-                fetch('/components/navbar.html')
+                fetch('/components/navbar')
                     .then(response => response.text())
                     .then(html => {
                         document.getElementById('navbar-container').innerHTML = html;

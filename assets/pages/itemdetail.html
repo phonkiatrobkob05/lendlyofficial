@@ -56,7 +56,9 @@
                 const description = urlParams.get("description");
                 const price = urlParams.get("price");
                 const id = urlParams.get("id"); // ID ของภาพ
-    
+                
+                console.log(id);
+                
                 
     
                 // ดึงข้อมูลรูปจาก API
@@ -65,6 +67,8 @@
                 console.log("Image ID:", id);
                 console.log("API Response:", data); // ดูข้อมูล API Response
                 console.log(`https://lendly-backend.onrender.com/api/image/${id}`);
+                
+                
                 
                 if (data && data.imageUrl) {
                     // อัปเดตข้อมูลบนหน้าเว็บ

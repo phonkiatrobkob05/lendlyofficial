@@ -117,13 +117,31 @@
                             const dataImage = await resImage.json();
 
                             // รวมข้อมูลสินค้าและรูปภาพเข้าด้วยกัน (กรณีเป็น Array)
-                            data = dataText.map((product, index) => {
-                                return {
-                                    ...product,
-                                    imageUrl: dataImage[index]?.imageUrl || 'default-image-url.jpg' // ใช้รูป default ถ้าไม่มีข้อมูล
-                                };
-                            });
-
+                            data = dataText.map((product) => {
+                            // เก็บ productId จาก product ปัจจุบัน
+                            const productId = product.productId;
+                            
+                            // แสดงข้อมูลเพื่อการตรวจสอบ
+                            console.log(`หาการจับคู่สำหรับ product ID: ${productId} (ประเภท: ${typeof productId})`);
+                            
+                            // หารูปภาพที่ตรงกับ productId โดยแปลงเป็นสตริงทั้งคู่
+                            const matchingImage = dataImage.find(image => String(image.productId) === String(productId));
+                            
+                            if (matchingImage) {
+                                console.log(`พบรูปภาพที่ตรงกัน: ${matchingImage.imageUrl}`);
+                            } else {
+                                console.log(`ไม่พบรูปภาพที่ตรงกับ ID: ${productId}`);
+                            }
+                            
+                            const result = {
+                                ...product,
+                            imageUrl: matchingImage ? matchingImage.imageUrl : 'default-image-url.jpg',
+                            _id: matchingImage ? matchingImage._id : null // กำหนด _id ใหม่ ถ้าเจอการจับคู่
+                            };
+                            
+                            return result;
+                        });
+ 
                             console.log('Combined Data:', data);
 
                             renderData(data);
@@ -141,7 +159,8 @@
                             // Create a swiper-slide div
                             var slide = document.createElement('div');
                             slide.classList.add('swiper-slide');
-
+                            
+                            
                             // Create an anchor tag to make it clickable
                             var link = document.createElement('a');
                             link.href = `itemdetail.html?id=${product._id}&title=${encodeURIComponent(product.title)}&description=${encodeURIComponent(product.description || "No description")}&price=${product.price || 'N/A'}&file=${encodeURIComponent(product.imageUrl)}`;

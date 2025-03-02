@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        /* Basic styling for home page */
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .active-content {
+            display: block;
+        }
+
+        .navbar {
+            margin-top: 20px;
+        }
+
+        .active {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Home Page Title -->
+    <div class="p-3">
+        <h2>Welcome to the Library</h2>
+        <p class="text-center">Your digital library at your fingertips. Start exploring!</p>
+    </div>
+
+    <!-- Navbar for Navigation -->
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Library App</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item" id="home-nav">
+                            <a class="nav-link" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item" id="favorites-nav">
+                            <a class="nav-link" href="#favorites">Favorites</a>
+                        </li>
+                        <li class="nav-item" id="onborrow-nav">
+                            <a class="nav-link" href="#onborrow">On Borrow</a>
+                        </li>
+                        <li class="nav-item" id="returned-nav">
+                            <a class="nav-link" href="#returned">Returned</a>
+                        </li>
+                        <li class="nav-item" id="mylent-nav">
+                            <a class="nav-link" href="#mylent">My Lent</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Home Content Section -->
+    <div id="home" class="content-section active-content">
+        <div class="container text-center">
+            <h3>Welcome, [User's Name]</h3>
+            <p>Explore your library, view borrowed items, and more.</p>
+            <a href="#favorites" class="btn btn-primary">Go to Favorites</a>
+        </div>
+    </div>
+
+    <!-- Content Sections for Other Tabs -->
+    <div id="favorites" class="content-section">
+        <div class="container text-center">
+            <h3>Your Favorite Items</h3>
+            <p>Nothing here yet. Start adding your favorite items!</p>
+        </div>
+    </div>
+
+    <div id="onborrow" class="content-section">
+        <div class="container text-center">
+            <h3>Items You Have Borrowed</h3>
+            <p>No items borrowed yet. Check out the library's available collection!</p>
+        </div>
+    </div>
+
+    <div id="returned" class="content-section">
+        <div class="container text-center">
+            <h3>Returned Items</h3>
+            <p>All your returned items will show up here.</p>
+        </div>
+    </div>
+
+    <div id="mylent" class="content-section">
+        <div class="container text-center">
+            <h3>My Lent Items</h3>
+            <p>Items you've lent to others will appear here.</p>
+        </div>
+    </div>
+
+    <!-- Firebase Authentication -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBp-yQNpQMxcEXbq91-H85OakivJrj_fmw",
+            authDomain: "lendly-authenticate.firebaseapp.com",
+            projectId: "lendly-authenticate",
+            storageBucket: "lendly-authenticate.firebasestorage.app",
+            messagingSenderId: "300875265100",
+            appId: "1:300875265100:web:6c7977a6af3e88e4c670e9",
+            measurementId: "G-5W542FR5HL"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Handle Authentication State Change
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.querySelector('h3').textContent = `Welcome, ${user.displayName || 'User'}`;
+            } else {
+                window.location.href = 'login.html';  // Redirect to login page if user is not authenticated
+            }
+        });
+    </script>
+
+    <!-- JavaScript for Handling Content Display and Active Link -->
+    <script>
+        // Get all navigation items and content sections
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // Function to handle navigation clicks
+        function handleNavClick(event) {
+            const targetId = event.target.getAttribute('href').substring(1); // Get the section ID from the link
+            const targetSection = document.getElementById(targetId);
+
+            // Hide all sections
+            contentSections.forEach(section => {
+                section.classList.remove('active-content');
+            });
+
+            // Show the clicked section
+            targetSection.classList.add('active-content');
+
+            // Remove 'active' class from all nav items
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked nav item
+            event.target.closest('li').classList.add('active');
+        }
+
+        // Add event listeners to each navigation item
+        navItems.forEach(item => {
+            item.addEventListener('click', handleNavClick);
+        });
+    </script>
+
+</body>
+
+</html>

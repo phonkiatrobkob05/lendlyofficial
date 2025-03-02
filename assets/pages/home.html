@@ -109,57 +109,62 @@
                     var data = null
 
                     async function fetchData() {
-    const res = await fetch("https://lendly-backend.onrender.com/api/product");
-    const data = await res.json();
-    console.log(data);
+                        const res = await fetch("https://lendly-backend.onrender.com/api/product");
+                        const data = await res.json();
+                        console.log(data);
 
-    const swiperWrapper = document.querySelector('.swiper-wrapper');
-    data.forEach(product => {
-        // Create a swiper-slide div
-        var slide = document.createElement('div');
-        slide.classList.add('swiper-slide');
-        
-        // Create a card div inside the slide
-        var card = document.createElement('div');
-        card.classList.add('card', 'h-100');  // Add Bootstrap 'card' class
+                        const swiperWrapper = document.querySelector('.swiper-wrapper');
+                        data.forEach(product => {
+                            // Create a swiper-slide div
+                            var slide = document.createElement('div');
+                            slide.classList.add('swiper-slide');
 
-        // Create the image element
-        var image = document.createElement('img');
-        image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`;
-        image.alt = product.title;
-        image.classList.add('card-img-top');  // Use Bootstrap's 'card-img-top' class
+                            // Create an anchor tag to make it clickable
+                            var link = document.createElement('a');
+                            link.href = `itemdetail.html?id=${product._id}&title=${encodeURIComponent(product.title)}&description=${encodeURIComponent(product.description || "No description")}&price=${product.price || 'N/A'}&file=${encodeURIComponent(product.file)}`;
+                            link.classList.add('text-decoration-none'); // Remove underline
 
-        // Create the card body
-        var cardBody = document.createElement('div');
-        cardBody.classList.add('card-body');
+                            // Create a card div inside the link
+                            var card = document.createElement('div');
+                            card.classList.add('card', 'h-100');
 
-        // Create the title element
-        var title = document.createElement('h5');
-        title.classList.add('card-title');
-        title.textContent = product.title;
+                            // Create the image element
+                            var image = document.createElement('img');
+                            image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`;
+                            image.alt = product.title;
+                            image.classList.add('card-img-top');
 
-        // Create the description element (if available)
-        var description = document.createElement('p');
-        description.classList.add('card-text');
-        description.textContent = product.description || "No description available";  // Fallback if no description
+                            // Create the card body
+                            var cardBody = document.createElement('div');
+                            cardBody.classList.add('card-body');
 
-        // Create a price element (if available)
-        var price = document.createElement('p');
-        price.classList.add('card-text');
-        price.textContent = `Price: $${product.price || 'N/A'}`;  // Fallback if no price
+                            // Create the title element
+                            var title = document.createElement('h5');
+                            title.classList.add('card-title');
+                            title.textContent = product.title;
 
-        // Append all elements together
-        cardBody.appendChild(title);
-        cardBody.appendChild(description);
-        cardBody.appendChild(price);
-        card.appendChild(image);
-        card.appendChild(cardBody);
-        slide.appendChild(card);
+                            // Create the description element
+                            var description = document.createElement('p');
+                            description.classList.add('card-text');
+                            description.textContent = product.description || "No description available";
 
-        // Add the slide to the swiper wrapper
-        swiperWrapper.appendChild(slide);
-    });
-}
+                            // Create a price element
+                            var price = document.createElement('p');
+                            price.classList.add('card-text');
+                            price.textContent = `Price: $${product.price || 'N/A'}`;
+
+                            // Append elements
+                            cardBody.appendChild(title);
+                            cardBody.appendChild(description);
+                            cardBody.appendChild(price);
+                            card.appendChild(image);
+                            card.appendChild(cardBody);
+                            link.appendChild(card);
+                            slide.appendChild(link);
+                            swiperWrapper.appendChild(slide);
+                        });
+                    }
+
 
 
 

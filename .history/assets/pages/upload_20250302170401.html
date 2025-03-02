@@ -71,13 +71,13 @@
 
 <body>
     <div class="container">
-        <div class="header">
-            <div class="w-100 d-flex justify-content-between align-items-center" >
+        <div class="header" style="padding: 0 60px;">
+            <div class="w-100 d-flex justify-content-between align-items-center mb-3">
                 <a class="icon-button" onclick="window.history.back();">
-                        <img src="/assets/images/backButton.svg" alt="Back" class="icon" />
+                        <img src="/assets/images/backButton.svg" alt="Back" class="icon">
                 </a>
                 
-                <div style="font-size: 32px;">Post to Lend</div>
+                <h2>Post to Lend</h2>
 
                 <a class="icon-button" href="/assets/pages/profile.html" style="opacity: 0;">
                     <img
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="text-temp form-box">
-                    <label for="image" style="padding-bottom: 2px;">File (Image):</label>
+                    <label for="file" style="padding-bottom: 2px;">File (Image):</label>
                     <input type="file" id="file" name="file" accept="image/*" required>
                 </div>
 
@@ -119,12 +119,10 @@
                     <select id="genre" name="genre" required>
                         <option value="">Select Genre</option>
                         <option value="Action">Electronics</option>
-                        <option value="Drama">Clothes</option>
-                        <option value="Comedy">Tools</option>
-                        <option value="Adventure">Accessories</option>
-                        <option value="Horror">Beauty</option>
-                        <option value="Horror">Other</option>
-
+                        <option value="Drama">Calculator</option>
+                        <option value="Comedy">Camera</option>
+                        <option value="Adventure">Phone</option>
+                        <option value="Horror">Lens</option>
                     </select>
                 </div>
 
@@ -136,34 +134,25 @@
                 </div>
 
                 <div class="text-temp form-box">
-                    <label for="mainLocation" style="padding-bottom: 2px;">Main Location:</label>
-                    <select id="mainLocation" name="mainLocation" required>
-                        <option value="">Select Main Location</option>
-                        <option value="Engineer">Engineer</option>
+                    <label for="faculty" style="padding-bottom: 2px;">Faculty:</label>
+                    <select id="faculty" name="faculty" required>
+                        <option value="">Select Faculty</option>
+                        <option value="Engineering">Engineering</option>
                         <option value="Science">Science</option>
                         <option value="Arts">Arts</option>
+                        <option value="Business">Business</option>
+                        <option value="Liberal Arts">Liberal Arts</option>
                     </select>
                 </div>
 
-                <div class="text-temp form-box">
-                    <label for="subLocation" style="padding-bottom: 2px;">Sub Location:</label>
-                    <select id="subLocation" name="subLocation" disabled required>
-                        <option value="">Select Main Location First</option>
-                    </select>
-                </div>
-
-                
-                <div style="justify-items: center;">
-                    <div style="padding-top: 20px; padding-bottom: 20px;">
-                        <button type="submit" class="btn btn-primary" style="padding: 6px;">Submit</button>
-                    </div>
+                <div style="padding-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="padding: 6px;">Submit</button>
                 </div>
             </form>
             <script>
                 document.getElementById('lenderForm').addEventListener('submit',async function(e){
                 e.preventDefault()
                 const formData = new FormData();
-                const formDataImage = new FormData();
 
                 // เพิ่มค่าลงใน FormData
                 formData.append('title', document.getElementById('title').value);
@@ -171,8 +160,7 @@
                 formData.append('genre', document.getElementById('genre').value);
                 formData.append('price', document.getElementById('price').value);
                 formData.append('faculty', document.getElementById('faculty').value);
-
-                formDataImage.append('image', document.getElementById('file').files[0]);
+                formData.append('file', document.getElementById('file').files[0]);
                 
 
                 if (file) {
@@ -191,60 +179,11 @@
                     const data = await res.json()
                     console.log('Success:', data);
                     
-                const resImage = await fetch('https://lendly-backend.onrender.com/api/upload', {
-                    method: 'POST',
-                    body: formDataImage,
-                    headers: {}
-                    })
-                    const dataImage = await resImage.json()
-                    console.log('Success:', dataImage);
-                    
                 } catch (error) {
                     onsole.error('Error:', error);
                     alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
                 }
                 })
-
-                const SubLos = {
-                    Engineer: [
-                        {value: "a", text: "โรง A"},
-                        {value: "b", text: "โรง B"},
-                        {value: "c", text: "โรง C"},
-                    ],
-                    Science: [
-                        {value: "z", text: "1"},
-                        {value: "x", text: "2"},
-                        {value: "c", text: "3"},
-                    ],
-                    Arts: [
-                        {value: "pat", text: "สถาปัตฯ"},
-                        {value: "b", text: "5"},
-                        {value: "n", text: "6"},
-                    ]
-                }
-
-                const MainLo = document.getElementById("mainLocation");
-                const SubLo = document.getElementById("subLocation");
-
-                MainLo.addEventListener("change",function() {
-                    const selectedLocation = this.value;
-
-                    SubLo.innerHTML = '<option value="">Sub Location</option>';
-
-                    if (selectedLocation) {
-                        SubLos[selectedLocation].forEach(item => {
-                            const option = document.createElement("option");
-                            option.value = item.value;
-                            option.textContent = item.text;
-                            SubLo.appendChild(option);
-                        });
-
-                        SubLo.disabled = false;
-                    } else {
-                        SubLo.disabled = true;
-                    }
-                });
-
             </script>
         </div>
 

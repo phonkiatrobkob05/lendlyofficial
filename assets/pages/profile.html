@@ -43,11 +43,38 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
     </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Authentication check
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                // User is not logged in, redirect to login page
+                window.location.href = "login.html";
+            } else {
+                // User is logged in, continue loading the page
+                // ... rest of your profile page logic ...
+                const userDocRef = db.collection('users').doc(user.uid);
+                userDocRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        document.getElementById('userNamedisplay').textContent = userData.fullName;
+                        document.getElementById('userEmailDisplay').textContent = userData.email;
+                    } else {
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+            }
+        });
+    </script>
 </head>
 <body class="bg-light">
     <div class="container text-center">
         <div class="p-4">
-            <img src="/assets/images/nigga.png" alt="Profile Picture"
+            <img src="/assets/images/moodenggggg.webp" alt="Profile Picture"
                 class="rounded-circle border border-primary object-fit-cover" width="100" height="100" />
             <h4 class="mt-3" id="userNamedisplay">Loading...</h4>
             <p class="text-muted" id="userEmailDisplay"></p>

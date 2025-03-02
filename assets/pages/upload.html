@@ -155,7 +155,10 @@
                 
                 <div style="justify-items: center;">
                     <div style="padding-top: 20px; padding-bottom: 20px;">
-                        <button type="submit" class="btn btn-primary" style="padding: 6px;">Submit</button>
+                        <button type="submit" 
+                                class="btn btn-primary" 
+                                style="padding: 6px;">
+                                Submit</button>
                     </div>
                 </div>
             </form>
@@ -243,6 +246,11 @@
                     } else {
                         SubLo.disabled = true;
                     }
+                });
+
+                document.getElementById("lenderForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
+                window.location.href = "favorite.html#mylent"; // Redirect ไปหน้า favorite และไปที่ ID mylent
                 });
 
             </script>

@@ -156,7 +156,7 @@
                             var image = document.createElement('img');
                             image.src = product.imageUrl; // ใช้ URL จาก Cloudinary
                             image.alt = product.title;
-                            image.classList.add('card-img-top', 'fixed-size');
+                            image.classList.add('card-img-top');
 
                             // Create the card body
                             var cardBody = document.createElement('div');
@@ -255,6 +255,9 @@
                 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
                 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
                 <script>
+                    // Hide content until authentication is verified
+                    document.body.style.display = "none";
+
                     // Your Firebase configuration
                     const firebaseConfig = {
                         apiKey: "AIzaSyBp-yQNpQMxcEXbq91-H85OakivJrj_fmw",
@@ -274,11 +277,13 @@
                     // Authentication check
                     auth.onAuthStateChanged((user) => {
                         if (!user) {
-                            // User is not logged in, redirect to login page
-                            window.location.href = "login.html";
+                            // Redirect unauthenticated users to login
+                            window.location.replace("login.html");
                         } else {
-                            // User is logged in, continue loading the page
-                            // ... rest of your profile page logic ...
+                            // Show the page content once authentication is verified
+                            document.body.style.display = "block";
+
+                            // Load user data
                             const userDocRef = db.collection('users').doc(user.uid);
                             userDocRef.get().then((doc) => {
                                 if (doc.exists) {
@@ -293,6 +298,7 @@
                             });
                         }
                     });
+
                 </script>
             </div>
 

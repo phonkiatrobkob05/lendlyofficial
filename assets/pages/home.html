@@ -62,11 +62,9 @@
         <div class="container">
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="https://lendly-backend.onrender.com/api/uploads/file-1740843836602-66339848.jpg"
-                            alt="" class="w-25" />
-                        <p>eeee</p>
-                    </div>
+                    <!-- <div class="swiper-slide">
+                        
+                    </div> -->
 
                     <!-- <div class="swiper-slide">
             <img src="../images/unclelee.jpg" alt="" />
@@ -98,72 +96,99 @@
 
                 <!-- Initialize Swiper -->
                 <script>
-                    document.addEventListener("DOMContentLoaded", function () {
-                        try {
-                            fetchData();
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    });
+                   document.addEventListener("DOMContentLoaded", function () {
+    try {
+        fetchData();
+    } catch (error) {
+        console.log(error);
+    }
+});
 
-                    var data = null
+// กำหนด data ไว้ที่ระดับ global เพื่อให้ใช้งานได้ถูกต้อง
+var data = [];
 
-                    async function fetchData() {
-                        const res = await fetch("https://lendly-backend.onrender.com/api/product");
-                        const data = await res.json();
-                        console.log(data);
+async function fetchData() {
+    try {
+        // ดึงข้อมูลสินค้า
+        const res = await fetch("https://lendly-backend.onrender.com/api/product");
+        const dataText = await res.json();
 
-                        const swiperWrapper = document.querySelector('.swiper-wrapper');
-                        data.forEach(product => {
-                            // Create a swiper-slide div
-                            var slide = document.createElement('div');
-                            slide.classList.add('swiper-slide');
+        // ดึงข้อมูลรูปภาพ
+        const resImage = await fetch("https://lendly-backend.onrender.com/api/image");
+        const dataImage = await resImage.json();
 
-                            // Create an anchor tag to make it clickable
-                            var link = document.createElement('a');
-                            link.href = `itemdetail.html?id=${product._id}&title=${encodeURIComponent(product.title)}&description=${encodeURIComponent(product.description || "No description")}&price=${product.price || 'N/A'}&file=${encodeURIComponent(product.file)}`;
-                            link.classList.add('text-decoration-none'); // Remove underline
+        // รวมข้อมูลสินค้าและรูปภาพเข้าด้วยกัน (กรณีเป็น Array)
+        data = dataText.map((product, index) => {
+            return {
+                ...product,
+                imageUrl: dataImage[index]?.imageUrl || 'default-image-url.jpg' // ใช้รูป default ถ้าไม่มีข้อมูล
+            };
+        });
+
+        console.log('Combined Data:', data);
+
+        renderData(data);
+    } catch (error) {
+        console.error('Fetch data error:', error);
+    }
+}
+
+// ฟังก์ชันสำหรับสร้าง Card แสดงข้อมูล
+function renderData(data) {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    swiperWrapper.innerHTML = ''; // ล้างข้อมูลเก่าออกก่อน
+
+    data.forEach(product => {
+        // Create a swiper-slide div
+        var slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
+
+        // Create an anchor tag to make it clickable
+        var link = document.createElement('a');
+        link.href = `itemdetail.html?id=${product._id}&title=${encodeURIComponent(product.title)}&description=${encodeURIComponent(product.description || "No description")}&price=${product.price || 'N/A'}&file=${encodeURIComponent(product.imageUrl)}`;
+        link.classList.add('text-decoration-none'); // Remove underline
 
                             // Create a card div inside the link
                             var card = document.createElement('div');
-                            card.classList.add('card', 'h-100');
+                            card.classList.add('card', 'h-50');
 
-                            // Create the image element
-                            var image = document.createElement('img');
-                            image.src = `https://lendly-backend.onrender.com/api/uploads/${product.file}`;
-                            image.alt = product.title;
-                            image.classList.add('card-img-top');
+        // Create the image element
+        var image = document.createElement('img');
+        image.src = product.imageUrl; // ใช้ URL จาก Cloudinary
+        image.alt = product.title;
+        image.classList.add('card-img-top');
 
-                            // Create the card body
-                            var cardBody = document.createElement('div');
-                            cardBody.classList.add('card-body');
+        // Create the card body
+        var cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
 
-                            // Create the title element
-                            var title = document.createElement('h5');
-                            title.classList.add('card-title');
-                            title.textContent = product.title;
+        // Create the title element
+        var title = document.createElement('h5');
+        title.classList.add('card-title');
+        title.textContent = product.title;
 
-                            // Create the description element
-                            var description = document.createElement('p');
-                            description.classList.add('card-text');
-                            description.textContent = product.description || "No description available";
+        // Create the description element
+        var description = document.createElement('p');
+        description.classList.add('card-text');
+        description.textContent = product.description || "No description available";
 
-                            // Create a price element
-                            var price = document.createElement('p');
-                            price.classList.add('card-text');
-                            price.textContent = `Price: $${product.price || 'N/A'}`;
+        // Create a price element
+        var price = document.createElement('p');
+        price.classList.add('card-text');
+        price.textContent = `Price: $${product.price || 'N/A'}`;
 
-                            // Append elements
-                            cardBody.appendChild(title);
-                            cardBody.appendChild(description);
-                            cardBody.appendChild(price);
-                            card.appendChild(image);
-                            card.appendChild(cardBody);
-                            link.appendChild(card);
-                            slide.appendChild(link);
-                            swiperWrapper.appendChild(slide);
-                        });
-                    }
+        // Append elements
+        cardBody.appendChild(title);
+        cardBody.appendChild(description);
+        cardBody.appendChild(price);
+        card.appendChild(image);
+        card.appendChild(cardBody);
+        link.appendChild(card);
+        slide.appendChild(link);
+        swiperWrapper.appendChild(slide);
+    });
+}
+
 
                     var swiper = new Swiper(".mySwiper", {
                         slidesPerView: 3,

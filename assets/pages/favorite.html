@@ -453,6 +453,58 @@ function removeFromFavorites(userId, itemId, buttonElement) {
             alert("Error removing item: " + error.message);
         });
 }
+function removeFromonborrow(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('favorites').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+            
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#favorites-content .col');
+            if (remainingItems.length === 0) {
+                // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
+                document.getElementById('favorites-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            }
+            
+            alert("Removed from favorites");
+        })
+        .catch((error) => {
+            console.error("Error removing from favorites: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
+function removeFromreturned(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('favorites').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+            
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#favorites-content .col');
+            if (remainingItems.length === 0) {
+                // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
+                document.getElementById('favorites-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            }
+            
+            alert("Removed from favorites");
+        })
+        .catch((error) => {
+            console.error("Error removing from favorites: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
 </script>
 
     <!-- Navbar placeholder -->

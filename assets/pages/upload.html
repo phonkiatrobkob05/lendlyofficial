@@ -213,6 +213,8 @@
                         SubLo.disabled = true;
                     }
                 });
+
+                
                 document.getElementById('lenderForm').addEventListener('submit',async function(e){
                 e.preventDefault()
                 const formData = new FormData();
@@ -266,6 +268,76 @@
                 event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
                 // window.location.href = "favorite.html#mylent"; // Redirect ไปหน้า favorite และไปที่ ID mylent
                 });
+
+/*////////////////////////เพิ่ม card ใน mylent//////////////////////////////*/
+            
+// document.getElementById('lenderForm').addEventListener('submit', async function(e) {
+//     e.preventDefault();
+    
+//     const user = firebase.auth().currentUser;
+//     if (!user) {
+//         alert("Please log in to lend items.");
+//         return;
+//     }
+    
+//     const formData = new FormData();
+//     const formDataImage = new FormData();
+    
+//     // เพิ่มค่าลงใน FormData
+//     formData.append('title', document.getElementById('title').value);
+//     formData.append('description', document.getElementById('description').value);
+//     formData.append('genre', document.getElementById('genre').value);
+//     formData.append('price', document.getElementById('price').value);
+//     formData.append('mainLocation', document.getElementById('mainLocation').value);
+//     formData.append('subLocation', document.getElementById('subLocation').value);
+
+//     try {
+//         const res = await fetch('https://lendly-backend.onrender.com/api/product', {  /*/////////*/
+//             method: 'POST',
+//             body: formData
+//         });
+//         const data = await res.json();
+//         console.log('Product Success:', data);
+
+//         if (!data.productId) {
+//             console.error('No productId returned from API');
+//             return;
+//         }
+
+//         // อัปโหลดรูปภาพ
+//         formDataImage.append('image', document.getElementById('file').files[0]);
+//         formDataImage.append('productId', data.productId);
+        
+//         const resImage = await fetch('https://lendly-backend.onrender.com/api/upload', {
+//             method: 'POST',
+//             body: formDataImage
+//         });
+//         const dataImage = await resImage.json();
+//         console.log('Image Upload Success:', dataImage);
+
+//         // 📌 บันทึกข้อมูลลง Firestore
+//         const dbRef = db.collection("users").doc(user.uid).collection("lentItems").doc(data.productId);
+//         await dbRef.set({
+//             productId: data.productId,
+//             title: formData.get("title"),
+//             description: formData.get("description"),
+//             genre: formData.get("genre"),
+//             price: formData.get("price"),
+//             mainLocation: formData.get("mainLocation"),
+//             subLocation: formData.get("subLocation"),
+//             imageUrl: dataImage.imageUrl || "", // เก็บลิงก์รูปที่อัปโหลด
+//             createdAt: firebase.firestore.FieldValue.serverTimestamp()
+//         });
+
+//         alert("Item listed successfully!");
+//         window.location.href = "mylent.html"; // 🔹 ไปที่หน้าดูรายการของที่ให้ยืม <-----------------
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+//     }
+// });
+
 
             </script>
         </div>

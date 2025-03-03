@@ -100,12 +100,9 @@
     </div>
 
     <div id="mylent" class="content-section">
-        <div class="container d-flex flex-column align-items-center pt-4">
-            <h1>Sorry, Nothing Here in My Lent</h1>
-            <img src="/assets/images/Nologo.svg" alt="No Logo">
-            <a href="/assets/pages/upload.html">Upload an Item</a>
-        </div>
+        <div id="mylent-content" class="container mt-4"></div>
     </div>
+
 
     <!-- JavaScript to Handle Content Display and Active Link -->
     <script>
@@ -194,6 +191,7 @@
         if (user) {
             // เรียกใช้ฟังก์ชันเพื่อแสดงรายการโปรด
             displayUserFavorites(user.uid);
+            displayUserLentItems(user.uid);  // เรียกใช้ฟังก์ชัน My Lent ด้วย
         } else {
             // ถ้ายังไม่ได้ล็อกอิน
             console.log("User not logged in");
@@ -305,6 +303,115 @@ function removeFromFavorites(userId, itemId, buttonElement) {
             alert("Error removing item: " + error.message);
         });
 }
+
+/*/////////////////////////////เพิ่มลบรายการให้ยืม///////////////////////////////////////*/
+
+// ฟังก์ชันแสดงรายการ My Lent ของผู้ใช้
+function displayUserLentItems(userId) {
+    const myLentSection = document.getElementById('mylent');
+    const myLentContent = document.createElement('div');
+    myLentContent.className = 'container mt-4';
+    myLentContent.id = 'mylent-content';
+
+    // ดึงข้อมูลจาก Firestore <---------------------------------------------------------- เปลี่ยน database ให้หน่อยค้าบบ อยากให้ขึ้น mylent
+    db.collection('users').doc(userId).collection('mylent')
+        .orderBy('lentAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            // ล้างเนื้อหาเก่าออก
+            myLentSection.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                // ถ้าไม่มีรายการปล่อยยืม
+                myLentContent.innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in My Lent</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                        <a href="/assets/pages/upload.html" class="btn btn-primary mt-3">Upload an Item</a>
+                    </div>`;
+            } else {
+                // ถ้ามีรายการปล่อยยืม
+                myLentContent.innerHTML = `<h3>Your Lent Items</h3>`;
+                const row = document.createElement('div');
+                row.className = 'row row-cols-1 row-cols-md-3 g-4';
+
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const col = document.createElement('div');
+                    col.className = 'col';
+
+                    col.innerHTML = `
+                        <div class="card h-100">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.title}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.title}</h5>
+                                <p class="card-text">${item.description || 'No description available'}</p>
+                                <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger remove-lent" data-id="${item.id}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    row.appendChild(col);
+                });
+
+                myLentContent.appendChild(row);
+            }
+
+            myLentSection.appendChild(myLentContent);
+
+            // เพิ่ม event listener สำหรับปุ่มลบรายการปล่อยยืม
+            const removeButtons = document.querySelectorAll('.remove-lent');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id');
+                    removeFromLent(userId, itemId, this);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting lent items: ", error);
+            myLentContent.innerHTML = `
+                <div class="d-flex flex-column align-items-center pt-4">
+                    <h1>Error loading lent items</h1>
+                    <p>${error.message}</p>
+                </div>`;
+            myLentSection.appendChild(myLentContent);
+        });
+}
+
+// ฟังก์ชันลบรายการออกจาก My Lent
+function removeFromLent(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('mylent').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#mylent-content .col');
+            if (remainingItems.length === 0) {
+                document.getElementById('mylent-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in My Lent</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                        <a href="/assets/pages/upload.html" class="btn btn-primary mt-3">Upload an Item</a>
+                    </div>`;
+            }
+
+            alert("Removed from My Lent");
+        })
+        .catch((error) => {
+            console.error("Error removing from My Lent: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
+
+
 </script>
 
     <!-- Navbar placeholder -->

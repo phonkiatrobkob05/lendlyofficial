@@ -98,6 +98,8 @@
                     document.addEventListener("DOMContentLoaded", function () {
                         try {
                             fetchData();
+                            var a = localStorage.getItem("firebase:authUser:AIzaSyBp-yQNpQMxcEXbq91-H85OakivJrj_fmw:[DEFAULT]"	
+)
                         } catch (error) {
                             console.log(error);
                         }
@@ -381,6 +383,62 @@ auth.onAuthStateChanged((user) => {
 
 
 
+
+
+function renderData(data) {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    swiperWrapper.innerHTML = ''; // Clear previous data
+
+    data.forEach(product => {
+        var slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
+        
+        var link = document.createElement('a');
+        link.href = `itemdetail.html?id=${product._id}&title=${encodeURIComponent(product.title)}&description=${encodeURIComponent(product.description || "No description")}&price=${product.price || 'N/A'}&file=${encodeURIComponent(product.imageUrl)}`;
+        link.classList.add('text-decoration-none');
+
+        var card = document.createElement('div');
+        card.classList.add('card', 'h-50');
+
+        var image = document.createElement('img');
+        image.src = product.imageUrl;
+        image.alt = product.title;
+        image.classList.add('card-img-top');
+
+        var cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        var title = document.createElement('h5');
+        title.classList.add('card-title');
+        title.textContent = product.title;
+
+        var description = document.createElement('p');
+        description.classList.add('card-text');
+        description.textContent = product.description || "No description available";
+
+        var price = document.createElement('p');
+        price.classList.add('card-text');
+        price.textContent = `Price: $${product.price || 'N/A'}`;
+
+        // Create a favorite button
+        var favButton = document.createElement('button');
+        favButton.textContent = 'Add to Favorites';
+        favButton.classList.add('btn', 'btn-warning');
+        favButton.onclick = function () {
+            addToFavorites(product);
+        };
+
+        cardBody.appendChild(title);
+        cardBody.appendChild(description);
+        cardBody.appendChild(price);
+        cardBody.appendChild(favButton);
+        card.appendChild(image);
+        card.appendChild(cardBody);
+        link.appendChild(card);
+        slide.appendChild(link);
+        swiperWrapper.appendChild(slide);
+    });
+}
 
 
                 </script>

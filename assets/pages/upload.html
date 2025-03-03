@@ -30,33 +30,44 @@
             appId: "1:300875265100:web:6c7977a6af3e88e4c670e9",
             measurementId: "G-5W542FR5HL"
         };
-
+    
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-
-        // Authentication check
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                // User is not logged in, redirect to login page
-                window.location.href = "login.html";
-            } else {
-                // User is logged in, continue loading the page
-                // ... rest of your profile page logic ...
-                const userDocRef = db.collection('users').doc(user.uid);
-                userDocRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        document.getElementById('userNamedisplay').textContent = userData.fullName;
-                        document.getElementById('userEmailDisplay').textContent = userData.email;
-                    } else {
-                        console.log("No such document!");
-                    }
-                }).catch((error) => {
-                    console.log("Error getting document:", error);
-                });
-            }
+    
+        // Wait for DOM to load before initializing Firebase logic
+        document.addEventListener('DOMContentLoaded', function () {
+            // Authentication check
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    // User is not logged in, redirect to login page
+                    window.location.href = "login.html";
+                } else {
+                    // User is logged in, continue loading the page
+                    // ... rest of your profile page logic ...
+                    const userDocRef = db.collection('users').doc(user.uid);
+                    userDocRef.get().then((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            // Ensure the DOM elements exist before trying to access them
+                            const userNamedisplay = document.getElementById('userNamedisplay');
+                            const userEmailDisplay = document.getElementById('userEmailDisplay');
+                            
+                            if (userNamedisplay && userEmailDisplay) {
+                                userNamedisplay.textContent = userData.fullName;
+                                userEmailDisplay.textContent = userData.email;
+                            } else {
+                                console.log("Error: DOM elements not found");
+                            }
+                        } else {
+                            console.log("No such document!");
+                        }
+                    }).catch((error) => {
+                        console.log("Error getting document:", error);
+                    });
+                }
+            });
         });
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -163,61 +174,6 @@
                 </div>
             </form>
             <script>
-                document.getElementById('lenderForm').addEventListener('submit',async function(e){
-                e.preventDefault()
-                const formData = new FormData();
-                const formDataImage = new FormData();
-
-                // เพิ่มค่าลงใน FormData
-                formData.append('title', document.getElementById('title').value);
-                formData.append('description', document.getElementById('description').value);
-                formData.append('genre', document.getElementById('genre').value);
-                formData.append('price', document.getElementById('price').value);
-                formData.append('mainLocation', document.getElementById('mainLocation').value);
-                formData.append('subLocation', document.getElementById('subLocation').value);
-                
-
-                
-                
-
-                if (file) {
-                    console.log("Have File:");
-                } else {
-                    console.log("No file selected");
-                }
-                
-
-                try {
-                const res = await fetch('https://lendly-backend.onrender.com/api/product', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {}
-                    })
-                    const data = await res.json()
-                    console.log('Product Success:', data);
-
-                    if (!data.productId) {
-                    console.error('No productId returned from API');
-                    return;
-                }
-
-                formDataImage.append('image', document.getElementById('file').files[0]);
-                formDataImage.append('productId', data.productId);
-                    
-                const resImage = await fetch('https://lendly-backend.onrender.com/api/upload', {
-                    method: 'POST',
-                    body: formDataImage,
-                    headers: {}
-                    })
-                    const dataImage = await resImage.json()
-                    console.log('Image Upload Success:', dataImage);
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
-                }
-                })
-
                 const SubLos = {
                     Engineer: [
                         {value: "a", text: "โรง A"},
@@ -257,10 +213,58 @@
                         SubLo.disabled = true;
                     }
                 });
+                document.getElementById('lenderForm').addEventListener('submit',async function(e){
+                e.preventDefault()
+                const formData = new FormData();
+                const formDataImage = new FormData();
+
+                // เพิ่มค่าลงใน FormData
+                formData.append('title', document.getElementById('title').value);
+                formData.append('description', document.getElementById('description').value);
+                formData.append('genre', document.getElementById('genre').value);
+                formData.append('price', document.getElementById('price').value);
+                formData.append('mainLocation', document.getElementById('mainLocation').value);
+                formData.append('subLocation', document.getElementById('subLocation').value);
+                
+
+            
+
+                try {
+                    const res = await fetch('https://lendly-backend.onrender.com/api/product', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {}
+                    })
+                    const data = await res.json()
+                    console.log('Product Success:', data);
+
+                    if (!data.productId) {
+                        console.error('No productId returned from API');
+                        return;
+                    }
+
+                    formDataImage.append('image', document.getElementById('file').files[0]);
+                    formDataImage.append('productId', data.productId);
+                        
+                    const resImage = await fetch('https://lendly-backend.onrender.com/api/upload', {
+                        method: 'POST',
+                        body: formDataImage,
+                        headers: {}
+                    })
+                    const dataImage = await resImage.json()
+                    console.log('Image Upload Success:', dataImage);
+                        
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการส่งข้อมูล');
+                }
+                })
+
+                
 
                 document.getElementById("lenderForm").addEventListener("submit", function(event) {
                 event.preventDefault(); // ป้องกันการส่งฟอร์มแบบปกติ
-                window.location.href = "favorite.html#mylent"; // Redirect ไปหน้า favorite และไปที่ ID mylent
+                // window.location.href = "favorite.html#mylent"; // Redirect ไปหน้า favorite และไปที่ ID mylent
                 });
 
             </script>

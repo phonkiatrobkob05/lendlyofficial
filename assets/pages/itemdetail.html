@@ -127,7 +127,7 @@ function saveToFavorites() {
         db.collection('users').doc(userId).collection('favorites').doc(id)
             .set(itemData)
             .then(() => {
-                alert("บันทึกไปยัง Favorites เรียบร้อยแล้ว");
+                alert("บันทึกไปยัง Library เรียบร้อยแล้ว");
                 
                 // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
                 const bookmarkBtn = document.querySelector('button[type="button"]');
@@ -136,6 +136,34 @@ function saveToFavorites() {
             })
             .catch((error) => {
                 console.error("Error adding to favorites: ", error);
+                alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
+            });
+        db.collection('users').doc(userId).collection('onborrow').doc(id)
+            .set(itemData)
+            .then(() => {
+                
+                
+                // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
+                const bookmarkBtn = document.querySelector('button[type="button"]');
+                bookmarkBtn.classList.add('bg-primary');
+                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            })
+            .catch((error) => {
+                console.error("Error adding to onborrow: ", error);
+                alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
+            });
+        db.collection('users').doc(userId).collection('returned').doc(id)
+            .set(itemData)
+            .then(() => {
+                
+                
+                // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
+                const bookmarkBtn = document.querySelector('button[type="button"]');
+                bookmarkBtn.classList.add('bg-primary');
+                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            })
+            .catch((error) => {
+                console.error("Error adding to returned: ", error);
                 alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
             });
     } else {

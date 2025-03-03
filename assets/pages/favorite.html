@@ -194,6 +194,8 @@
         if (user) {
             // เรียกใช้ฟังก์ชันเพื่อแสดงรายการโปรด
             displayUserFavorites(user.uid);
+            displayUserBorrow(user.uid);
+            displayUserReturn(user.uid);
         } else {
             // ถ้ายังไม่ได้ล็อกอิน
             console.log("User not logged in");
@@ -201,6 +203,7 @@
         }
     });
 });
+    
 
 // ฟังก์ชันแสดงรายการโปรดของผู้ใช้
 function displayUserFavorites(userId) {
@@ -277,6 +280,154 @@ function displayUserFavorites(userId) {
             favoritesSection.appendChild(favoritesContent);
         });
 }
+function displayUserBorrow(userId) {
+    const onborrowSection = document.getElementById('onborrow');
+    const onborrowContent = document.createElement('div');
+    onborrowContent.className = 'container mt-4';
+    onborrowContent.id = 'onborrow-content';
+    
+    // ดึงข้อมูลจาก Firestore
+    db.collection('users').doc(userId).collection('onborrow')
+        .orderBy('savedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            // ล้างเนื้อหาเก่าออก
+            onborrowSection.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                // ถ้าไม่มีรายการโปรด
+                onborrowContent.innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            } else {
+                // ถ้ามีรายการโปรด
+                onborrowContent.innerHTML = `<h3>Your Favorites</h3>`;
+                const row = document.createElement('div');
+                row.className = 'row row-cols-1 row-cols-md-3 g-4';
+                
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const col = document.createElement('div');
+                    col.className = 'col';
+                    
+                    col.innerHTML = `
+                        <div class="card h-100">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.title}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.title}</h5>
+                                <p class="card-text">${item.description || 'No description available'}</p>
+                                <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger remove-favorite" data-id="${item.id}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    row.appendChild(col);
+                });
+                
+                onborrowContent.appendChild(row);
+            }
+            
+            onborrowSection.appendChild(onborrowContent);
+            
+            // เพิ่ม event listener สำหรับปุ่มลบรายการโปรด
+            const removeButtons = document.querySelectorAll('.remove-onborrow');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    removeFromonborrow(userId, itemId, this);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting onborrow: ", error);
+            onborrowContent.innerHTML = `
+                <div class="d-flex flex-column align-items-center pt-4">
+                    <h1>Error loading onborrow</h1>
+                    <p>${error.message}</p>
+                </div>`;
+                onborrowSection.appendChild(onborrowContent);
+        });
+}
+function displayUserReturn(userId) {
+    const returnedSection = document.getElementById('returned');
+    const returnedContent = document.createElement('div');
+    returnedContent.className = 'container mt-4';
+    returnedContent.id = 'returned-content';
+    
+    // ดึงข้อมูลจาก Firestore
+    db.collection('users').doc(userId).collection('returned')
+        .orderBy('savedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            // ล้างเนื้อหาเก่าออก
+            returnedSection.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                // ถ้าไม่มีรายการโปรด
+                returnedContent.innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in returned</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            } else {
+                // ถ้ามีรายการโปรด
+                returnedContent.innerHTML = `<h3>Your returned</h3>`;
+                const row = document.createElement('div');
+                row.className = 'row row-cols-1 row-cols-md-3 g-4';
+                
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const col = document.createElement('div');
+                    col.className = 'col';
+                    
+                    col.innerHTML = `
+                        <div class="card h-100">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.title}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.title}</h5>
+                                <p class="card-text">${item.description || 'No description available'}</p>
+                                <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-success remove-favorite" data-id="${item.id}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    row.appendChild(col);
+                });
+                
+                returnedContent.appendChild(row);
+            }
+            
+            returnedSection.appendChild(returnedContent);
+            
+            // เพิ่ม event listener สำหรับปุ่มลบรายการโปรด
+            const removeButtons = document.querySelectorAll('.remove-returned');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    removeFromreturned(userId, itemId, this);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting returned: ", error);
+            returnedContent.innerHTML = `
+                <div class="d-flex flex-column align-items-center pt-4">
+                    <h1>Error loading returned</h1>
+                    <p>${error.message}</p>
+                </div>`;
+                returnedSection.appendChild(returnedContent);
+        });
+}
 
 // ฟังก์ชันลบรายการออกจากรายการโปรด
 function removeFromFavorites(userId, itemId, buttonElement) {
@@ -302,6 +453,58 @@ function removeFromFavorites(userId, itemId, buttonElement) {
         })
         .catch((error) => {
             console.error("Error removing from favorites: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
+function removeFromonborrow(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('onborrow').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+            
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#onborrow-content .col');
+            if (remainingItems.length === 0) {
+                // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
+                document.getElementById('onborrow-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in onborrow</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            }
+            
+            alert("Removed from onborrow");
+        })
+        .catch((error) => {
+            console.error("Error removing from onborrow: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
+function removeFromoReturn(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('returned').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+            
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#returned-content .col');
+            if (remainingItems.length === 0) {
+                // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
+                document.getElementById('returned-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in returned</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            }
+            
+            alert("Removed from returned");
+        })
+        .catch((error) => {
+            console.error("Error removing from returned: ", error);
             alert("Error removing item: " + error.message);
         });
 }

@@ -319,6 +319,71 @@ auth.onAuthStateChanged((user) => {
         });
     }
 });
+/*/////////////////////////////////////////////////////////////////////////////*/
+            // ฟังก์ชันสำหรับสร้าง Card แสดงข้อมูล
+    function renderData(data) {
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    swiperWrapper.innerHTML = ''; // ล้างข้อมูลเก่าออกก่อน
+
+    data.forEach(product => {
+        // Create a swiper-slide div
+        var slide = document.createElement('div');
+        slide.classList.add('swiper-slide');
+
+        // Create a card div
+        var card = document.createElement('div');
+        card.classList.add('card', 'h-100');
+
+        // Create the image element
+        var image = document.createElement('img');
+        image.src = product.imageUrl;
+        image.alt = product.title;
+        image.classList.add('card-img-top');
+
+        // Create the card body
+        var cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        // Create the title element
+        var title = document.createElement('h5');
+        title.classList.add('card-title');
+        title.textContent = product.title;
+
+        // Create the description element
+        var description = document.createElement('p');
+        description.classList.add('card-text');
+        description.textContent = product.description || "No description available";
+
+        // Create a price element
+        var price = document.createElement('p');
+        price.classList.add('card-text');
+        price.textContent = `Price: $${product.price || 'N/A'}`;
+
+        // Create a "Borrow" button
+        var borrowButton = document.createElement('button');
+        borrowButton.textContent = 'Borrow';
+        borrowButton.classList.add('btn', 'btn-primary', 'w-100');
+        borrowButton.onclick = function () {
+            borrowItem(product);
+        };
+
+        // Append elements
+        cardBody.appendChild(title);
+        cardBody.appendChild(description);
+        cardBody.appendChild(price);
+        cardBody.appendChild(borrowButton);
+        card.appendChild(image);
+        card.appendChild(cardBody);
+        slide.appendChild(card);
+        swiperWrapper.appendChild(slide);
+    });
+    }
+
+
+
+
+
+
 
 function renderData(data) {
     const swiperWrapper = document.querySelector('.swiper-wrapper');

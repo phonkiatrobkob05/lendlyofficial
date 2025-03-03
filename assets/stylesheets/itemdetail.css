@@ -1,9 +1,12 @@
 #item-image {
-    width: 100%; /* Responsive width */
+    width: 50%; /* Responsive width */
     aspect-ratio: 1 / 1; /* Keep square shape */
     object-fit: cover; /* Maintain aspect ratio and crop overflow */
     border-radius: 8px; /* Optional rounded corners */
     max-width: 300px; /* Prevent it from being too large on bigger screens */
+}
+#item-title{
+    font-size: 20px;
 }
 button {
     
@@ -12,7 +15,7 @@ button {
 }
 
 /* On smaller screens, allow full width */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
     #item-image {
         max-width: 100%; /* Let it be full width on mobile */
     }

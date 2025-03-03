@@ -19,7 +19,7 @@
                 
                         try {
                             // ดึงข้อมูลสินค้า
-                            const res = await fetch(`https://lendly-backend.onrender.com/api/image/${file}`);
+                            const res = await fetch(https://lendly-backend.onrender.com/api/image/${file});
                             data = await res.json();
                             console.log(data.imageUrl);
                             
@@ -35,7 +35,7 @@
             // Update the page content
             document.getElementById("item-title").textContent = title;
             document.getElementById("item-description").textContent = description;
-            document.getElementById("item-price").textContent = `Price: $${price}`;
+            document.getElementById("item-price").textContent = Price: $${price};
             document.getElementById("item-image").src = data.imageUrl ;
         });
     </script> -->
@@ -244,13 +244,13 @@ async function checkIfBorrow() {
         
         try {
             const doc = await db.collection('users').doc(user.uid).collection('onborrow').doc(id).get();
-            
+        
             if (doc.exists) {
                 // ถ้ามีอยู่แล้ว ให้เปลี่ยนสีปุ่ม
                 const BorrowBtn = document.querySelector('button#buttonBorrow');
                 BorrowBtn.classList.add('bg-danger');
                 
-            }
+        }
         } catch (error) {
             console.error("Error checking favorite status: ", error);
         }
@@ -268,7 +268,7 @@ async function fetchData() {
         const id = urlParams.get("id"); // ID ของภาพ
         
         // ดึงข้อมูลรูปจาก API
-        const res = await fetch(`https://lendly-backend.onrender.com/api/image/${id}`);
+        const res = await fetch(`https:lendly-backend.onrender.com/api/image/${id}`);
         const data = await res.json();
         
         if (data && data.imageUrl) {
@@ -308,11 +308,10 @@ async function fetchData() {
         <h3 id="item-price"></h3>
         <div  class="d-flex justify-content-center gap-3 align-items-center">
             <button type="button" class="border border-3 rounded-3" id="buttonfavorite"><img src="/assets/images/bookmark.svg" alt=""></button>
-            <button onclick="saveToBorrow()" class="btn btn-primary">Borrow</button>
+            <button type="button" class="btn btn-primary border" id="buttonBorrow">Borrow</button>
 
         </div>
     </div>
 
 </body>
 </html>
-    

@@ -318,7 +318,7 @@ function displayUserBorrow(userId) {
                                 <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
                                 <div class="d-flex justify-content-between">
                                     <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
-                                    <button class="btn btn-danger remove-favorite" data-id="${item.id}">Remove</button>
+                                    <button class="btn btn-danger remove-onborrow" data-id="${item.id}">Remove</button>
                                 </div>
                             </div>
                         </div>
@@ -392,7 +392,7 @@ function displayUserReturn(userId) {
                                 <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
                                 <div class="d-flex justify-content-between">
                                     <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
-                                    <button class="btn btn-success remove-favorite" data-id="${item.id}">Remove</button>
+                                    <button class="btn btn-success remove-returned" data-id="${item.id}">Returned</button>
                                 </div>
                             </div>
                         </div>
@@ -454,7 +454,7 @@ function removeFromFavorites(userId, itemId, buttonElement) {
         });
 }
 function removeFromonborrow(userId, itemId, buttonElement) {
-    db.collection('users').doc(userId).collection('favorites').doc(itemId)
+    db.collection('users').doc(userId).collection('onborrow').doc(itemId)
         .delete()
         .then(() => {
             // ลบ card ออกจาก DOM
@@ -462,25 +462,25 @@ function removeFromonborrow(userId, itemId, buttonElement) {
             card.remove();
             
             // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
-            const remainingItems = document.querySelectorAll('#favorites-content .col');
+            const remainingItems = document.querySelectorAll('#onborrow-content .col');
             if (remainingItems.length === 0) {
                 // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
-                document.getElementById('favorites-content').innerHTML = `
+                document.getElementById('onborrow-content').innerHTML = `
                     <div class="d-flex flex-column align-items-center pt-4">
-                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <h1>Sorry, Nothing Here in Onborrow</h1>
                         <img src="/assets/images/Nologo.svg" alt="No Logo">
                     </div>`;
             }
             
-            alert("Removed from favorites");
+            alert("Removed from onborrow");
         })
         .catch((error) => {
-            console.error("Error removing from favorites: ", error);
+            console.error("Error removing from onborrow: ", error);
             alert("Error removing item: " + error.message);
         });
 }
 function removeFromreturned(userId, itemId, buttonElement) {
-    db.collection('users').doc(userId).collection('favorites').doc(itemId)
+    db.collection('users').doc(userId).collection('returned').doc(itemId)
         .delete()
         .then(() => {
             // ลบ card ออกจาก DOM
@@ -488,20 +488,20 @@ function removeFromreturned(userId, itemId, buttonElement) {
             card.remove();
             
             // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
-            const remainingItems = document.querySelectorAll('#favorites-content .col');
+            const remainingItems = document.querySelectorAll('#returned-content .col');
             if (remainingItems.length === 0) {
                 // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
-                document.getElementById('favorites-content').innerHTML = `
+                document.getElementById('returned-content').innerHTML = `
                     <div class="d-flex flex-column align-items-center pt-4">
-                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <h1>Sorry, Nothing Here in Returned</h1>
                         <img src="/assets/images/Nologo.svg" alt="No Logo">
                     </div>`;
             }
             
-            alert("Removed from favorites");
+            alert("Removed from returned");
         })
         .catch((error) => {
-            console.error("Error removing from favorites: ", error);
+            console.error("Error removing from returned: ", error);
             alert("Error removing item: " + error.message);
         });
 }

@@ -186,35 +186,125 @@
 <div id="favorites-list"></div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        displayFavorites();
-    });
-
-    function displayFavorites() {
-        const favoritesList = document.getElementById('favorites-list');
-        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-        if (favorites.length === 0) {
-            favoritesList.innerHTML = "<p>No favorites added yet.</p>";
-            return;
+    document.addEventListener("DOMContentLoaded", function() {
+    // โหลด navbar และตั้งค่าอื่นๆ ตามเดิม
+    
+    // ตรวจสอบสถานะการล็อกอิน
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            // เรียกใช้ฟังก์ชันเพื่อแสดงรายการโปรด
+            displayUserFavorites(user.uid);
+        } else {
+            // ถ้ายังไม่ได้ล็อกอิน
+            console.log("User not logged in");
+            // อาจจะให้แสดงข้อความหรือ redirect ไปหน้าล็อกอิน
         }
+    });
+});
 
-        favorites.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.classList.add('card', 'mb-3');
-
-            const cardContent = `
-                <img src="${product.imageUrl}" class="card-img-top" alt="${product.title}">
-                <div class="card-body">
-                    <h5 class="card-title">${product.title}</h5>
-                    <p class="card-text">${product.description || 'No description available'}</p>
-                    <p class="card-text"><strong>Price:</strong> $${product.price || 'N/A'}</p>
-                </div>
-            `;
-            productCard.innerHTML = cardContent;
-            favoritesList.appendChild(productCard);
+// ฟังก์ชันแสดงรายการโปรดของผู้ใช้
+function displayUserFavorites(userId) {
+    const favoritesSection = document.getElementById('favorites');
+    const favoritesContent = document.createElement('div');
+    favoritesContent.className = 'container mt-4';
+    favoritesContent.id = 'favorites-content';
+    
+    // ดึงข้อมูลจาก Firestore
+    db.collection('users').doc(userId).collection('favorites')
+        .orderBy('savedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            // ล้างเนื้อหาเก่าออก
+            favoritesSection.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                // ถ้าไม่มีรายการโปรด
+                favoritesContent.innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            } else {
+                // ถ้ามีรายการโปรด
+                favoritesContent.innerHTML = `<h3>Your Favorites</h3>`;
+                const row = document.createElement('div');
+                row.className = 'row row-cols-1 row-cols-md-3 g-4';
+                
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const col = document.createElement('div');
+                    col.className = 'col';
+                    
+                    col.innerHTML = `
+                        <div class="card h-100">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.title}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.title}</h5>
+                                <p class="card-text">${item.description || 'No description available'}</p>
+                                <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger remove-favorite" data-id="${item.id}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    row.appendChild(col);
+                });
+                
+                favoritesContent.appendChild(row);
+            }
+            
+            favoritesSection.appendChild(favoritesContent);
+            
+            // เพิ่ม event listener สำหรับปุ่มลบรายการโปรด
+            const removeButtons = document.querySelectorAll('.remove-favorite');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    removeFromFavorites(userId, itemId, this);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting favorites: ", error);
+            favoritesContent.innerHTML = `
+                <div class="d-flex flex-column align-items-center pt-4">
+                    <h1>Error loading favorites</h1>
+                    <p>${error.message}</p>
+                </div>`;
+            favoritesSection.appendChild(favoritesContent);
         });
-    }
+}
+
+// ฟังก์ชันลบรายการออกจากรายการโปรด
+function removeFromFavorites(userId, itemId, buttonElement) {
+    db.collection('users').doc(userId).collection('favorites').doc(itemId)
+        .delete()
+        .then(() => {
+            // ลบ card ออกจาก DOM
+            const card = buttonElement.closest('.col');
+            card.remove();
+            
+            // ตรวจสอบว่ายังมีรายการเหลืออยู่หรือไม่
+            const remainingItems = document.querySelectorAll('#favorites-content .col');
+            if (remainingItems.length === 0) {
+                // ถ้าไม่มีรายการเหลือ ให้แสดงข้อความว่าไม่มีรายการโปรด
+                document.getElementById('favorites-content').innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            }
+            
+            alert("Removed from favorites");
+        })
+        .catch((error) => {
+            console.error("Error removing from favorites: ", error);
+            alert("Error removing item: " + error.message);
+        });
+}
 </script>
 
     <!-- Navbar placeholder -->

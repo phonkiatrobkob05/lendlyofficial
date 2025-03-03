@@ -39,53 +39,6 @@
             document.getElementById("item-image").src = data.imageUrl ;
         });
     </script> -->
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                await fetchData(); // เรียกฟังก์ชันพร้อมรอให้ดึงข้อมูลเสร็จ
-            } catch (error) {
-                console.log(error);
-            }
-        });
-    
-        async function fetchData() {
-            try {
-                // ดึง URL Parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                const title = urlParams.get("title");
-                const description = urlParams.get("description");
-                const price = urlParams.get("price");
-                const id = urlParams.get("id"); // ID ของภาพ
-                
-                console.log(id);
-                
-                
-    
-                // ดึงข้อมูลรูปจาก API
-                const res = await fetch(`https://lendly-backend.onrender.com/api/image/${id}`);
-                const data = await res.json();
-                console.log("Image ID:", id);
-                console.log("API Response:", data); // ดูข้อมูล API Response
-                console.log(`https://lendly-backend.onrender.com/api/image/${id}`);
-                
-                
-                
-                if (data && data.imageUrl) {
-                    // อัปเดตข้อมูลบนหน้าเว็บ
-                    document.getElementById("item-title").textContent = title;
-                    document.getElementById("item-description").textContent = description;
-                    document.getElementById("item-price").textContent = `Price: $${price}`;
-                    document.getElementById("item-image").src = data.imageUrl;
-                } else {
-                    console.error("Image URL not found in API response");
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
-    </script>
-    
-    
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -128,7 +81,130 @@
                 });
             }
         });
+        
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        await fetchData(); // เรียกฟังก์ชันพร้อมรอให้ดึงข้อมูลเสร็จ
+        saveToFavorites()
+        // เพิ่ม event listener ให้กับปุ่ม bookmark หลังจากโหลดข้อมูลเสร็จ
+        const bookmarkBtn = document.querySelector('button[type="button"]');
+        bookmarkBtn.addEventListener('click', saveToFavorites);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+// ฟังก์ชันบันทึกข้อมูลไปยังพื้นที่ Favorites ของ user
+function saveToFavorites() {
+    // ตรวจสอบว่ามีการล็อกอินแล้วหรือไม่
+    const user = auth.currentUser;
+    console.log('dfgfdg',user);
+    
+    if (user) {
+        const userId = user.uid;
+        
+        // ดึงข้อมูลของ item ปัจจุบัน
+        const urlParams = new URLSearchParams(window.location.search);
+        const title = urlParams.get("title");
+        const description = urlParams.get("description");
+        const price = urlParams.get("price");
+        const id = urlParams.get("id");
+        const imageUrl = document.getElementById("item-image").src;
+        
+        // สร้างข้อมูล item ที่จะบันทึก
+        const itemData = {
+            id: id,
+            title: title,
+            description: description,
+            price: price,
+            imageUrl: imageUrl,
+            savedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        // บันทึกข้อมูลไปยัง Firestore ในคอลเลคชัน favorites ของผู้ใช้
+        db.collection('users').doc(userId).collection('favorites').doc(id)
+            .set(itemData)
+            .then(() => {
+                alert("บันทึกไปยัง Favorites เรียบร้อยแล้ว");
+                
+                // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
+                const bookmarkBtn = document.querySelector('button[type="button"]');
+                bookmarkBtn.classList.add('bg-primary');
+                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            })
+            .catch((error) => {
+                console.error("Error adding to favorites: ", error);
+                alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
+            });
+    } else {
+        // ถ้ายังไม่ได้ล็อกอิน
+        alert("กรุณาเข้าสู่ระบบก่อนบันทึกรายการโปรด");
+        window.location.href = "login.html";
+    }
+}
+
+
+// ตรวจสอบว่ารายการนี้อยู่ใน favorites หรือไม่
+async function checkIfFavorited() {
+    const user = auth.currentUser;
+    
+    if (user) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+        
+        try {
+            const doc = await db.collection('users').doc(user.uid).collection('favorites').doc(id).get();
+            
+            if (doc.exists) {
+                // ถ้ามีอยู่แล้ว ให้เปลี่ยนสีปุ่ม
+                const bookmarkBtn = document.querySelector('button[type="button"]');
+                bookmarkBtn.classList.add('bg-primary');
+                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            }
+        } catch (error) {
+            console.error("Error checking favorite status: ", error);
+        }
+    }
+}
+
+// แก้ไขฟังก์ชัน fetchData เพื่อเรียกใช้ checkIfFavorited หลังจากโหลดข้อมูลเสร็จ
+async function fetchData() {
+    try {
+        // ดึง URL Parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const title = urlParams.get("title");
+        const description = urlParams.get("description");
+        const price = urlParams.get("price");
+        const id = urlParams.get("id"); // ID ของภาพ
+        
+        // ดึงข้อมูลรูปจาก API
+        const res = await fetch(`https://lendly-backend.onrender.com/api/image/${id}`);
+        const data = await res.json();
+        
+        if (data && data.imageUrl) {
+            // อัปเดตข้อมูลบนหน้าเว็บ
+            document.getElementById("item-title").textContent = title;
+            document.getElementById("item-description").textContent = description;
+            document.getElementById("item-price").textContent = `Price: $${price}`;
+            document.getElementById("item-image").src = data.imageUrl;
+            
+            // หลังจากโหลดข้อมูลเสร็จ ตรวจสอบสถานะ favorite
+            await checkIfFavorited();
+        } else {
+            console.error("Image URL not found in API response");
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+    </script>
+    
+    
+   
+    
 </head>
 <body>
     <header class="p-4">

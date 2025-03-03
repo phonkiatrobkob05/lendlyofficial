@@ -319,6 +319,7 @@ auth.onAuthStateChanged((user) => {
         });
     }
 });
+
 function renderData(data) {
     const swiperWrapper = document.querySelector('.swiper-wrapper');
     swiperWrapper.innerHTML = ''; // Clear previous data
@@ -374,13 +375,6 @@ function renderData(data) {
     });
 }
 
-// Function to add product to localStorage as favorites
-function addToFavorites(product) {
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    favorites.push(product);
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    alert('Product added to favorites!');
-}
 
                 </script>
             </div>

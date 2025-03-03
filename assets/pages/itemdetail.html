@@ -87,10 +87,12 @@
         document.addEventListener("DOMContentLoaded", async function() {
     try {
         await fetchData(); // เรียกฟังก์ชันพร้อมรอให้ดึงข้อมูลเสร็จ
-        saveToFavorites()
         // เพิ่ม event listener ให้กับปุ่ม bookmark หลังจากโหลดข้อมูลเสร็จ
-        const bookmarkBtn = document.querySelector('button[type="button"]');
+        const bookmarkBtn = document.querySelector('button#buttonfavorite');
+        const BorrowBtn = document.querySelector('button#buttonBorrow');
         bookmarkBtn.addEventListener('click', saveToFavorites);
+        BorrowBtn.addEventListener('click', saveToBorrow);
+        // await saveToFavorites()
     } catch (error) {
         console.log(error);
     }
@@ -130,23 +132,60 @@ function saveToFavorites() {
                 alert("บันทึกไปยัง Library เรียบร้อยแล้ว");
                 
                 // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
-                const bookmarkBtn = document.querySelector('button[type="button"]');
-                bookmarkBtn.classList.add('bg-primary');
+                const bookmarkBtn = document.querySelector('button#buttonfavorite');
+                bookmarkBtn.classList.add('bg-warning');
                 bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
             })
             .catch((error) => {
                 console.error("Error adding to favorites: ", error);
                 alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
             });
+        
+            
+    } else {
+        // ถ้ายังไม่ได้ล็อกอิน
+        alert("กรุณาเข้าสู่ระบบก่อนบันทึกรายการโปรด");
+        window.location.href = "login.html";
+    }
+}
+function saveToBorrow() {
+    // ตรวจสอบว่ามีการล็อกอินแล้วหรือไม่
+    const user = auth.currentUser;
+    console.log('dfgfdg',user);
+    
+    if (user) {
+        const userId = user.uid;
+        
+        // ดึงข้อมูลของ item ปัจจุบัน
+        const urlParams = new URLSearchParams(window.location.search);
+        const title = urlParams.get("title");
+        const description = urlParams.get("description");
+        const price = urlParams.get("price");
+        const id = urlParams.get("id");
+        const imageUrl = document.getElementById("item-image").src;
+        
+        // สร้างข้อมูล item ที่จะบันทึก
+        const itemData = {
+            id: id,
+            title: title,
+            description: description,
+            price: price,
+            imageUrl: imageUrl,
+            savedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        
+        // บันทึกข้อมูลไปยัง Firestore ในคอลเลคชัน borrow ของผู้ใช้
+        
         db.collection('users').doc(userId).collection('onborrow').doc(id)
             .set(itemData)
             .then(() => {
+                alert("บันทึกไปยัง Library เรียบร้อยแล้ว");
                 
                 
                 // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
-                const bookmarkBtn = document.querySelector('button[type="button"]');
-                bookmarkBtn.classList.add('bg-primary');
-                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+                const BorrowBtn = document.querySelector('button#buttonBorrow');
+                BorrowBtn.classList.add('bg-danger');
+               ;
             })
             .catch((error) => {
                 console.error("Error adding to onborrow: ", error);
@@ -154,18 +193,18 @@ function saveToFavorites() {
             });
         db.collection('users').doc(userId).collection('returned').doc(id)
             .set(itemData)
-            .then(() => {
+            // .then(() => {
                 
                 
-                // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
-                const bookmarkBtn = document.querySelector('button[type="button"]');
-                bookmarkBtn.classList.add('bg-primary');
-                bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
-            })
-            .catch((error) => {
-                console.error("Error adding to returned: ", error);
-                alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
-            });
+            //     // เปลี่ยนสีปุ่มเพื่อแสดงว่าบันทึกแล้ว
+            //     const bookmarkBtn = document.querySelector('button[type="button"]');
+            //     bookmarkBtn.classList.add('bg-primary');
+            //     bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            // })
+            // .catch((error) => {
+            //     console.error("Error adding to returned: ", error);
+            //     alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
+            // });
     } else {
         // ถ้ายังไม่ได้ล็อกอิน
         alert("กรุณาเข้าสู่ระบบก่อนบันทึกรายการโปรด");
@@ -187,9 +226,30 @@ async function checkIfFavorited() {
             
             if (doc.exists) {
                 // ถ้ามีอยู่แล้ว ให้เปลี่ยนสีปุ่ม
-                const bookmarkBtn = document.querySelector('button[type="button"]');
-                bookmarkBtn.classList.add('bg-primary');
+                const bookmarkBtn = document.querySelector('button#buttonfavorite');
+                bookmarkBtn.classList.add('bg-warning');
                 bookmarkBtn.querySelector('img').style.filter = 'brightness(0) invert(1)';
+            }
+        } catch (error) {
+            console.error("Error checking favorite status: ", error);
+        }
+    }
+}
+async function checkIfBorrow() {
+    const user = auth.currentUser;
+    
+    if (user) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+        
+        try {
+            const doc = await db.collection('users').doc(user.uid).collection('onborrow').doc(id).get();
+            
+            if (doc.exists) {
+                // ถ้ามีอยู่แล้ว ให้เปลี่ยนสีปุ่ม
+                const BorrowBtn = document.querySelector('button#buttonBorrow');
+                BorrowBtn.classList.add('bg-danger');
+                
             }
         } catch (error) {
             console.error("Error checking favorite status: ", error);
@@ -220,6 +280,7 @@ async function fetchData() {
             
             // หลังจากโหลดข้อมูลเสร็จ ตรวจสอบสถานะ favorite
             await checkIfFavorited();
+            await checkIfBorrow()
         } else {
             console.error("Image URL not found in API response");
         }
@@ -246,8 +307,8 @@ async function fetchData() {
         <p id="item-description"></p>
         <h3 id="item-price"></h3>
         <div  class="d-flex justify-content-center gap-3 align-items-center">
-            <button type="button" class="border border-3 rounded-3"><img src="/assets/images/bookmark.svg" alt=""></button>
-            <a href="home.html" class="btn btn-primary">Back to Home</a>
+            <button type="button" class="border border-3 rounded-3" id="buttonfavorite"><img src="/assets/images/bookmark.svg" alt=""></button>
+            <button onclick="saveToBorrow()" class="btn btn-primary">Borrow</button>
 
         </div>
     </div>

@@ -19,7 +19,7 @@
                 
                         try {
                             // ดึงข้อมูลสินค้า
-                            const res = await fetch(https://lendly-backend.onrender.com/api/image/${file});
+                            const res = await fetch(`https://lendly-backend.onrender.com/api/image/${file}`);
                             data = await res.json();
                             console.log(data.imageUrl);
                             
@@ -35,7 +35,7 @@
             // Update the page content
             document.getElementById("item-title").textContent = title;
             document.getElementById("item-description").textContent = description;
-            document.getElementById("item-price").textContent = Price: $${price};
+            document.getElementById("item-price").textContent = `Price: $${price}`;
             document.getElementById("item-image").src = data.imageUrl ;
         });
     </script> -->
@@ -268,7 +268,7 @@ async function fetchData() {
         const id = urlParams.get("id"); // ID ของภาพ
         
         // ดึงข้อมูลรูปจาก API
-        const res = await fetch(`https:lendly-backend.onrender.com/api/image/${id}`);
+        const res = await fetch(`https://lendly-backend.onrender.com/api/image/${id}`);
         const data = await res.json();
         
         if (data && data.imageUrl) {
@@ -296,22 +296,3 @@ async function fetchData() {
     
 </head>
 <body>
-    <header class="p-4">
-        <button type="button" onclick="window.history.back();" style="border: none; background: none;">
-            <img src="/assets/images/leftarrow.svg" alt="">
-        </button>
-    </header>
-    <div class="container mt-5 d-flex flex-column align-items-center">
-        <h1 id="item-title" class=""></h1>
-        <img id="item-image" class="img-fluid mb-3" alt="Product Image">
-        <p id="item-description"></p>
-        <h3 id="item-price"></h3>
-        <div  class="d-flex justify-content-center gap-3 align-items-center">
-            <button type="button" class="border border-3 rounded-3" id="buttonfavorite"><img src="/assets/images/bookmark.svg" alt=""></button>
-            <button type="button" class="btn btn-primary border" id="buttonBorrow">Borrow</button>
-
-        </div>
-    </div>
-
-</body>
-</html>

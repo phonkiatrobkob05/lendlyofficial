@@ -61,6 +61,9 @@
     <div>
         <nav>
             <ul class="d-flex justify-content-center align-items-center gap-2 list-unstyled text-decoration-none">
+                <li class="border border-5 rounded-3" id="mylent-nav">
+                    <a href="#mylent">My Lent</a>
+                </li>
                 <li class="border border-5 rounded-3" id="favorites-nav">
                     <a href="#favorites">Favorites</a>
                 </li>
@@ -70,14 +73,21 @@
                 <li class="border border-5 rounded-3" id="returned-nav">
                     <a href="#returned">Returned</a>
                 </li>
-                <li class="border border-5 rounded-3" id="mylent-nav">
-                    <a href="#mylent">My Lent</a>
-                </li>
             </ul>
         </nav>
     </div>
 
     <!-- Content Sections -->
+    <div id="mylent" class="content-section">
+        <div class="container d-flex flex-column align-items-center pt-4">
+            <h1>Sorry, Nothing Here in My Lent</h1>
+            <img src="/assets/images/Nologo.svg" alt="No Logo">
+            <button class="btn btn-primary">
+                 <a href="/assets/pages/upload.html">Add Items</a>
+            </button>
+        </div>
+    </div>
+
     <div id="favorites" class="content-section">
         <div class="container d-flex flex-column align-items-center pt-4">
             <h1>Sorry, Nothing Here in Favorites</h1>
@@ -99,9 +109,6 @@
         </div>
     </div>
 
-    <div id="mylent" class="content-section">
-        <div id="mylent-content" class="container mt-4"></div>
-    </div>
 
 
     <!-- JavaScript to Handle Content Display and Active Link -->
@@ -141,8 +148,8 @@
         });
 
         // Optionally, show the Favorites section by default on page load
-        document.getElementById('favorites').classList.add('active-content');
-        document.getElementById('favorites-nav').classList.add('active');
+        document.getElementById('mylent').classList.add('active-content');
+        document.getElementById('mylent-nav').classList.add('active');
 
         function loadNavbar() {
             fetch('/components/navbar.html')  // Path to the navbar HTML file
@@ -505,6 +512,84 @@ function removeFromreturned(userId, itemId, buttonElement) {
             alert("Error removing item: " + error.message);
         });
 }
+
+/////////////////////////////////////////////////////////////////// mylent
+
+function displayUserMylent(userId) {
+    const mylentSection = document.getElementById('mylent');
+    const mylentContent = document.createElement('div');
+    mylentContent.className = 'container mt-4';
+    mylentContent.id = 'mylent-content';
+    
+    // ดึงข้อมูลจาก Firestore
+    db.collection('users').doc(userId).collection('mylent')
+        .orderBy('savedAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
+            // ล้างเนื้อหาเก่าออก
+            mylentSection.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                // ถ้าไม่มีรายการโปรด
+                mylentContent.innerHTML = `
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <h1>Sorry, Nothing Here in Favorites</h1>
+                        <img src="/assets/images/Nologo.svg" alt="No Logo">
+                    </div>`;
+            } else {
+                // ถ้ามีรายการโปรด
+                mylentContent.innerHTML = `<h3>Your Lent</h3>`;
+                const row = document.createElement('div');
+                row.className = 'row row-cols-1 row-cols-md-3 g-4';
+                
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    const col = document.createElement('div');
+                    col.className = 'col';
+                    
+                    col.innerHTML = `
+                        <div class="card h-100">
+                            <img src="${item.imageUrl}" class="card-img-top" alt="${item.title}" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${item.title}</h5>
+                                <p class="card-text">${item.description || 'No description available'}</p>
+                                <p class="card-text"><strong>Price: $${item.price || 'N/A'}</strong></p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="itemdetail.html?id=${item.id}&title=${encodeURIComponent(item.title)}&description=${encodeURIComponent(item.description)}&price=${item.price}" class="btn btn-primary">View Details</a>
+                                    <button class="btn btn-danger remove-mylent" data-id="${item.id}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    row.appendChild(col);
+                });
+                
+                mylentContent.appendChild(row);
+            }
+            
+            mylentSection.appendChild(mylentContent);
+            
+            // เพิ่ม event listener สำหรับปุ่มลบรายการโปรด
+            const removeButtons = document.querySelectorAll('.remove-mylent');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    removeFrommylent(userId, itemId, this);
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error getting mylent: ", error);
+            mylentContent.innerHTML = `
+                <div class="d-flex flex-column align-items-center pt-4">
+                    <h1>Error loading mylent</h1>
+                    <p>${error.message}</p>
+                </div>`;
+                mylentSection.appendChild(mylentContent);
+        });
+}
+
 </script>
 
     <!-- Navbar placeholder -->
